@@ -4,13 +4,7 @@ import { useEffect, useState } from 'react';
 export default function BlogPage(){
     const [posts,setPosts] = useState([]);
     useEffect(() => {
-        fetch('https://iemalteria-of.vercel.app/post', {
-            method: 'GET',
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-            }),
-        })
+        fetch('https://iemalteria-of.vercel.app/post', {mode: 'no-cors'})
         .then(response => {
             response.json().then(posts => {
                 setPosts(posts);
