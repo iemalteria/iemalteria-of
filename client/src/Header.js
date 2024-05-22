@@ -7,7 +7,7 @@ export default function Header() {
     const { setUserInfo, userInfo } = useContext(UserContext);
 
     useEffect(() => {
-        fetch('http://iemalteria-of.vercel.app/profile', {
+        fetch('https://iemalteria-of.vercel.app/profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
@@ -17,7 +17,7 @@ export default function Header() {
     }, [setUserInfo]);
 
     function logout() {
-        fetch('http://iemalteria-of.vercel.app/logout', {
+        fetch('https://iemalteria-of.vercel.app/logout', {
             credentials: 'include',
             method: 'POST',
         });
