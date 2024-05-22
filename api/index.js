@@ -17,66 +17,55 @@ const secret = 'fdsajiofhjdsa0989085r342';
 
 const allowedOrigins = [
     'http://localhost:3000',
-    'https://iemalteria-of.vercel.app'
+    'https://iemalteria-ofr.vercel.app'
 ];
 
-app.use(function (req, res, next) {
-   res.header("Access-Control-Allow-Origin", "*");
-   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-   next();
-});
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://iemalteria-ofr.vercel.app');
-    // Other headers that you need to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    // Allow credentials if needed
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    next();
-});
-
+// Configure CORS
 app.use(cors({
-    credentials: true,
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
         }
-    }
+    },
+    credentials: true,
 }));
+
 app.use(express.json());
 app.use(cookieParser());
-app.use('/uploads', express.static(__dirname + '/uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-mongoose.connect('mongodb+srv://institucionmalteria:400PEpqcSrJmnMXG@cluster0.css22m8.mongodb.net')
-
-app.post('/register', async (req,res) =>{
-    const {username,password} = req.body;
-    try{
-        const userDoc = await User.create({
-            username, 
-            password:bcrypt.hashSync(password, salt),
-        });
-        res.json(userDoc);
-    } catch(e) {
-        res.status(400).json(e);
-    }
-    
+mongoose.connect('mongodb+srv://institucionmalteria:400PEpqcSrJmnMXG@cluster0.css22m8.mongodb.net', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 });
 
-app.post('/login', async (req,res) => {
-    const {username,password} = req.body;
-    const userDoc = await User.findOne({username});
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const userDoc = await User.create({
+            username,
+            password: bcrypt.hashSync(password, salt),
+        });
+        res.json(userDoc);
+    } catch (e) {
+        res.status(400).json(e);
+    }
+});
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const userDoc = await User.findOne({ username });
     const passOk = bcrypt.compareSync(password, userDoc.password);
     if (passOk) {
-        jwt.sign({username,id:userDoc._id}, secret, {}, (err,token) => {
-            if(err) throw err;
-            res.cookie('token', token).json({
-                id:userDoc._id,
+        jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
+            if (err) throw err;
+            res.cookie('token', token, { httpOnly: true, sameSite: 'None', secure: true }).json({
+                id: userDoc._id,
                 username,
             });
-        })
+        });
     } else {
         res.status(400).json('Credenciales Incorrectas');
     }
@@ -94,52 +83,53 @@ app.get('/profile', (req, res) => {
         res.json(info);
     });
 });
-app.post('/logout', (req,res) => {
-    res.cookie('token', '').json('ok');
+
+app.post('/logout', (req, res) => {
+    res.cookie('token', '', { httpOnly: true, sameSite: 'None', secure: true }).json('ok');
 });
 
-app.post('/post', uploadMiddleware.single('file'), async (req,res) => {
-    const {originalname, path} = req.file;
+app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
+    const { originalname, path } = req.file;
     const parts = originalname.split('.');
     const ext = parts[parts.length - 1];
-    const newPath = path+'.'+ext;
+    const newPath = path + '.' + ext;
     fs.renameSync(path, newPath);
 
-    const {token} = req.cookies;
-    jwt.verify(token, secret, {}, async (err,info) => {
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
         if (err) throw err;
-        const {title,summary,content} = req.body;
+        const { title, summary, content } = req.body;
         const postDoc = await Post.create({
             title,
             summary,
             content,
-            cover:newPath,
-            author:info.id,
+            cover: newPath,
+            author: info.id,
         });
         res.json(postDoc);
     });
 });
 
-app.put('/post', uploadMiddleware.single('file'), async (req,res) => {
+app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     let newPath = null;
     if (req.file) {
-        const {originalname, path} = req.file;
+        const { originalname, path } = req.file;
         const parts = originalname.split('.');
         const ext = parts[parts.length - 1];
-        newPath = path+'.'+ext;
+        newPath = path + '.' + ext;
         fs.renameSync(path, newPath);
     }
 
-    const {token} = req.cookies;
-    jwt.verify(token, secret, {}, async (err,info) => {
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
         if (err) throw err;
-        const {id,title,summary,content} = req.body;
+        const { id, title, summary, content } = req.body;
         const postDoc = await Post.findById(id);
         const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
         if (!isAuthor) {
             return res.status(400).json('Autor invalido');
         }
-        
+
         await postDoc.updateOne({
             title,
             summary,
@@ -151,17 +141,17 @@ app.put('/post', uploadMiddleware.single('file'), async (req,res) => {
     });
 });
 
-app.get('/post', async (req,res) => {
+app.get('/post', async (req, res) => {
     res.json(
         await Post.find()
-        .populate('author', ['username'])
-        .sort({createdAt: - 1})
-        .limit(20)
+            .populate('author', ['username'])
+            .sort({ createdAt: -1 })
+            .limit(20)
     );
 });
 
-app.get('/post/:id', async (req,res) => {
-    const {id} = req.params;
+app.get('/post/:id', async (req, res) => {
+    const { id } = req.params;
     const postDoc = await Post.findById(id).populate('author', ['username']);
     res.json(postDoc);
 });
@@ -169,7 +159,7 @@ app.get('/post/:id', async (req,res) => {
 app.delete('/post/:id', async (req, res) => {
     const { id } = req.params;
     const { token } = req.cookies;
-    
+
     jwt.verify(token, secret, {}, async (err, info) => {
         if (err) {
             return res.status(401).json('Unauthorized');
