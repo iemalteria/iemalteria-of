@@ -7,7 +7,7 @@ export default function Header() {
     const { setUserInfo, userInfo } = useContext(UserContext);
 
     useEffect(() => {
-        fetch('http://localhost:4000/profile', {
+        fetch('http://iemalteria-of.vercel.app/profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
@@ -17,7 +17,7 @@ export default function Header() {
     }, [setUserInfo]);
 
     function logout() {
-        fetch('http://localhost:4000/logout', {
+        fetch('http://iemalteria-of.vercel.app/logout', {
             credentials: 'include',
             method: 'POST',
         });
@@ -30,7 +30,7 @@ export default function Header() {
         <header>
             <nav className="navbar">
                 <Link className="logo" to="/">
-                    <img src="http://localhost:4000/uploads/logo.png" alt="Logo" className="institution-logo" />
+                    <img src="http://iemalteria-of.vercel.app/uploads/logo.png" alt="Logo" className="institution-logo" />
                     I. E. Malteria
                 </Link>
                 <Link className="nav-bar-element" to="/blog">Blog</Link>
