@@ -17,7 +17,7 @@ export default function Header() {
     }, [setUserInfo]);
 
     function logout() {
-        fetch('https://iemalteria-of.vercel.app/logout', {
+        fetch('https://iemalteria-back.vercel.app/logout', {
             credentials: 'include',
             method: 'POST',
         });
@@ -30,7 +30,7 @@ export default function Header() {
         <header>
             <nav className="navbar">
                 <Link className="logo" to="/">
-                    <img src="https://iemalteria-of.vercel.app/uploads/logo.png" alt="Logo" className="institution-logo" />
+                    <img src="https://iemalteria-back.vercel.app/uploads/logo.png" alt="Logo" className="institution-logo" />
                     I. E. Malteria
                 </Link>
                 <Link className="nav-bar-element" to="/blog">Blog</Link>

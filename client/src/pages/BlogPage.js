@@ -10,7 +10,7 @@ export default function BlogPage(){
             withCredentials: true, // This is crucial to include cookies in your requests
         });
 
-        axiosInstance.get('https://iemalteria-of.vercel.app/api/post')
+        axiosInstance.get('https://iemalteria-back.vercel.app/post')
             .then(response => {
                 setPosts(response.data);
                 console.log(response);
