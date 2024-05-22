@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 export default function BlogPage(){
     const [posts,setPosts] = useState([]);
     useEffect(() => {
-        fetch('http://localhost:4000/post').then(response => {
+        fetch('http://https://iemalteria-of.vercel.app/post').then(response => {
             response.json().then(posts => {
                 setPosts(posts);
             });
