@@ -15,9 +15,10 @@ const path = require('path');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'fdsajiofhjdsa0989085r342';
 
-app.use(cors()); 
-app.options("*", cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    credentials: true,
+    origin: ['http://localhost:3000', 'https://iemalteria-of.vercel.app/']
+}));
 
 app.use(express.json());
 app.use(cookieParser());
