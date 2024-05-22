@@ -15,11 +15,16 @@ const path = require('path');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'fdsajiofhjdsa0989085r342';
 
-app.use(cors()); 
-app.options("*", cors());
+const corsOptions = {
+    origin: 'https://iemalteria-ofr.vercel.app', // Change this to your frontend URL
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Pre-flight options for all routes
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
