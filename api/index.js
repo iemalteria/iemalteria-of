@@ -16,7 +16,7 @@ const salt = bcrypt.genSaltSync(10);
 const secret = 'fdsajiofhjdsa0989085r342';
 
 const corsOptions = {
-    origin: 'https://iemalteria-ofr.vercel.app', // Change this to your frontend URL
+    origin: ['https://iemalteria-ofr.vercel.app', 'http://localhost:3000'], // Allowed origins
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 
