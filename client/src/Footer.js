@@ -10,7 +10,7 @@ const Footer = () => {
 
           <div className="footer-section">
             <div className='logo-back'>
-                <img src="http://iemalteria-of.vercel.app/uploads/logo.png" alt='' className='logo'></img>
+                <img src="https://iemalteria-of.vercel.app/uploads/logo.png" alt='' className='logo'></img>
             </div>
           </div>
 
