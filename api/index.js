@@ -28,12 +28,6 @@ mongoose.connect('mongodb+srv://institucionmalteria:400PEpqcSrJmnMXG@cluster0.cs
     useUnifiedTopology: true,
 });
 
-app.all('/*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
-
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
     try {
