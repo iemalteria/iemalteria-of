@@ -10,7 +10,7 @@ export default function PostPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://iemalteria-of.vercel.app/post/${id}`)
+        fetch(`https://iemalteria-of.vercel.app/post/${id}`)
             .then(response => {
                 response.json().then(postInfo => {
                     setPostInfo(postInfo);
@@ -19,7 +19,7 @@ export default function PostPage() {
     }, [id]);
 
     const handleDelete = () => {
-        fetch(`http://iemalteria-of.vercel.app/post/${postInfo._id}`, {
+        fetch(`https://iemalteria-of.vercel.app/post/${postInfo._id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ export default function PostPage() {
             </div>
 
             <div className="image">
-                <img src={`http://iemalteria-of.vercel.app/${postInfo.cover}`} alt="" />
+                <img src={`https://iemalteria-of.vercel.app/${postInfo.cover}`} alt="" />
             </div>
             <div className="content" dangerouslySetInnerHTML={{ __html: postInfo.content }}>
             </div>
