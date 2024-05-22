@@ -32,7 +32,7 @@ export default function CreatePost() {
         data.set('content', content);
         data.set('file', files[0]);
         ev.preventDefault();
-        const response = await fetch('http://iemalteria-of.vercel.app/post', {
+        const response = await fetch('https://iemalteria-of.vercel.app/post', {
             method: 'POST',
             body: data,
             credentials: 'include',
