@@ -1,15 +1,41 @@
 import Post from '../Post';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function BlogPage(){
     const [posts,setPosts] = useState([]);
     useEffect(() => {
-        fetch('https://iemalteria-of.vercel.app/post', {mode: 'no-cors'})
-        .then(response => {
-            response.json().then(posts => {
-                setPosts(posts);
+        const axiosInstance = axios.create();
+
+        axiosInstance.interceptors.request.use(
+            config => {
+                const allowedOrigins = ['https://iemalteria-of.vercel.app/', "http://localhost:3000/"];
+                const origin = new URL(config.url).origin;
+                if (allowedOrigins.includes(origin)) {
+                    // Agregar encabezado personalizado
+                    config.headers['Custom-Allow-Origin'] = '*';
+                }
+                return config;
+            },
+            error => {
+                return Promise.reject(error);
+            }
+        );
+
+        // Realizar la solicitud GET
+        axiosInstance.get('https://iemalteria-of.vercel.app/post')
+            .then(response => {
+                setPosts(response.data);
+                console.log(response)
+            })
+            .catch(error => {
+                console.error('Error fetching posts:', error);
             });
-        });
+
+        // Limpiar el interceptor al desmontar el componente
+        return () => {
+            axiosInstance.interceptors.request.eject(axiosInstance.interceptors.request.handlers.length - 1);
+        };
     }, []);
     return (
         <>
