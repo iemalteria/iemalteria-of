@@ -15,30 +15,23 @@ const path = require('path');
 const salt = bcrypt.genSaltSync(10);
 const secret = 'fdsajiofhjdsa0989085r342';
 
-const allowedOrigins = [
-    'http://localhost:3000',
-    'https://iemalteria-ofr.vercel.app'
-];
-
-// Configure CORS
-app.use(cors({
-    origin: function (origin, callback) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-}));
-
+app.use(cors()); 
+app.options("*", cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 mongoose.connect('mongodb+srv://institucionmalteria:400PEpqcSrJmnMXG@cluster0.css22m8.mongodb.net', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+});
+
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
 });
 
 app.post('/register', async (req, res) => {
